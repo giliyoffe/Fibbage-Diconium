@@ -1,0 +1,22 @@
+{
+  "name": "fibbage-diconium",
+  "version": "1.0.0",
+  "description": "boilerplate for fibbage diconium",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd client && npm install && cd .. && cd server1 && npm install",
+    "client": "cd client && npm run start",
+    "server": "cd server1 && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giliyoffe/Fibbage-Diconium.git"
+  },
+  "author": "diconium staffers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/giliyoffe/Fibbage-Diconium/issues"
+  },
+  "homepage": "https://github.com/giliyoffe/Fibbage-Diconium#readme"
+}
