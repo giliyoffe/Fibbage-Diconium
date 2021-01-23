@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/giliyoffe/Fibbage-Diconium/issues"
   },
-  "homepage": "https://github.com/giliyoffe/Fibbage-Diconium#readme"
+  "homepage": "https://github.com/giliyoffe/Fibbage-Diconium#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
