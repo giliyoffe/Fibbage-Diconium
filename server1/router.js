@@ -1,8 +1,10 @@
-const express=require('express');
-const router=express.Router();
+const express = require('express');
+const router = express.Router();
 
-router.get('/', (req, res)=> {
-    res.redirect('http://localhost:3000/');
+router.get('/', (req, res) => {
+	if (process.env.NODE_ENV !== 'production') {
+		res.redirect('http://localhost:3000/');
+	}
 });
 
 module.exports = router;

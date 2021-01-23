@@ -13,7 +13,7 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 app.use(cors());
-app.use(router);
+// app.use(router);
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
