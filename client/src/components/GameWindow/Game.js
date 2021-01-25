@@ -18,7 +18,7 @@ const GameWindow = ({ room, name, socket }) => {
 				alert(error);
 			}
 		});
-	});
+	}, []);
 
 	useEffect(() => {
 		socket.on('question', (message) => {
@@ -27,7 +27,7 @@ const GameWindow = ({ room, name, socket }) => {
 		socket.on('game-message', (message) => {
 			setMessages((messages) => [...messages, message]);
 		});
-	});
+	}, []);
 
 	const sendMessage = (event) => {
 		event.preventDefault();
