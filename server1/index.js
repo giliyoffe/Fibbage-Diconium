@@ -3,7 +3,8 @@ const express = require('express');
 const socketio = require('socket.io');
 const cors = require('cors');
 const path = require('path');
-
+const fs = require('fs').promises;
+const questions = require('./questions.json')
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
 const router = require('./router');
@@ -16,47 +17,113 @@ app.use(cors());
 // app.use(router);
 
 if (process.env.NODE_ENV === 'production') {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, '../client/build')));
+	// Serve any static files
+	app.use(express.static(path.join(__dirname, '../client/build')));
 
-  // Handle React routing, return all requests to React app
-  app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-  });
+	// Handle React routing, return all requests to React app
+	app.get('*', function (req, res) {
+		res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+	});
 }
+const startGame = () => {
+	try {
+		// let qList = await fs
+		// 	.readFile('./questions.json', 'utf8')
+		// 	.then((data) => JSON.parse(data));
 
+		let openingQs = questions.normal.sort(() => 0.5 - Math.random());
+		let finalQs = questions.final.sort(() => 0.5 - Math.random());
+console.log(openingQs[0])
+		//TODO: fix/ create game implementation
+		// for now it only returns the first Q
+		return openingQs[0];
+	} catch (error) {
+		console.error(error);
+	}
+};
 io.on('connect', (socket) => {
-  socket.on('join', ({ name, room }, callback) => {
-    const { error, user } = addUser({ id: socket.id, name, room });
+	socket.on('join', ({ name, room }, callback) => {
+		const { error, user } = addUser({ id: socket.id, name, room });
 
-    if(error) return callback(error);
+		if (error) return callback(error);
 
-    socket.join(user.room);
+		socket.join(user.room);
 
-    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
-    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
+		socket.emit('message', {
+			user: 'admin',
+			text: `${user.name}, welcome to room ${user.room}.`,
+		});
+		socket.broadcast.to(user.room).emit('message', {
+			user: 'admin',
+			text: `${user.name} has joined!`,
+		});
 
-    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+		io.to(user.room).emit('roomData', {
+			room: user.room,
+			users: getUsersInRoom(user.room),
+		});
 
-    callback();
-  });
+		callback();
+	});
 
-  socket.on('sendMessage', (message, callback) => {
-    const user = getUser(socket.id);
+	socket.on('sendMessage', (message, callback) => {
+		const user = getUser(socket.id);
 
-    io.to(user.room).emit('message', { user: user.name, text: message });
+		io.to(user.room).emit('message', { user: user.name, text: message });
 
-    callback();
-  });
+		callback();
+	});
 
-  socket.on('disconnect', () => {
-    const user = removeUser(socket.id);
+	//create sockets for player answers in the game
+	socket.on('sendAnswer', (message, callback) => {
+		const user = getUser(socket.id);
 
-    if(user) {
-      io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-      io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
-    }
-  });
+		io.to(user.room).emit('answer', { user: user.name, text: message });
+
+		callback();
+	});
+
+	//create sockets for actual game interactions
+	socket.on('join-game', ({ name, room }, callback) => {
+		const { error, user } = addUser({ id: socket.id, name, room });
+
+		if (error) return callback(error);
+
+		socket.join(user.room);
+
+		socket.emit('game-message', {
+			user: 'admin',
+			text: `${user.name}, welcome to the game ${user.room}.`,
+		});
+		socket.emit('question', {
+			user: 'admin',
+			text: `${startGame().question}`,
+		});
+
+		io.to(user.room).emit('roomData', {
+			room: user.room,
+			users: getUsersInRoom(user.room),
+		});
+
+		callback();
+	});
+
+	socket.on('disconnect', () => {
+		const user = removeUser(socket.id);
+
+		if (user) {
+			io.to(user.room).emit('message', {
+				user: 'Admin',
+				text: `${user.name} has left.`,
+			});
+			io.to(user.room).emit('roomData', {
+				room: user.room,
+				users: getUsersInRoom(user.room),
+			});
+		}
+	});
 });
 
-server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
+server.listen(process.env.PORT || 5000, () =>
+	console.log(`Server has started.`)
+);
