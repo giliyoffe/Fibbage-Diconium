@@ -10,7 +10,7 @@ const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-
+let randomQuestion = [];
 app.use(cors());
 
 if (process.env.NODE_ENV === 'production') {
@@ -23,14 +23,16 @@ if (process.env.NODE_ENV === 'production') {
 	});
 }
 const startGame = () => {
-	let openingQs = questions.normal.sort(() => 0.5 - Math.random());
-	let finalQs = questions.final.sort(() => 0.5 - Math.random());
+	let openingQs = questions.normal;
+	// .sort(() => 0.5 - Math.random());
+	// let finalQs = questions.final.sort(() => 0.5 - Math.random());
 	//TODO: fix/ create game implementation
 	// for now it only returns the first Q.. and its random for each player, not the same for one instance.
-	return openingQs[0];
+	return openingQs;
 };
 
 io.on('connect', (socket) => {
+	//Chat functionality
 	socket.on('join', ({ name, room }, callback) => {
 		const { error, user } = addUser({ id: socket.id, name, room });
 		if (error) return callback(error);
@@ -76,6 +78,10 @@ io.on('connect', (socket) => {
 
 	//create sockets for actual game interactions - theoretically all of the game logic should happen here?
 	socket.on('join-game', ({ name, room }, callback) => {
+		let randomNumber = Math.floor(startGame().length * Math.random());
+		randomQuestion.push(randomNumber);
+
+		console.log(randomNumber);
 		const { error, user } = addUser({ id: socket.id, name, room });
 		if (error) return callback(error);
 
@@ -88,9 +94,10 @@ io.on('connect', (socket) => {
 		//should return the same question to each player (perhaps startGame function above needs to be within the socket)
 		socket.emit('question', {
 			user: 'admin',
-			text: `${startGame().question}`,
-		});
-
+			text: `${startGame()[randomQuestion[0]].question}`,
+    });
+    
+		//TODO: ideas: when all players have submitted, move on to next stage or setInterval for timers that clears when sockets
 		io.to(user.room).emit('roomData', {
 			room: user.room,
 			users: getUsersInRoom(user.room),
