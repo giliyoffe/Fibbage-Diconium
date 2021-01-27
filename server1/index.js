@@ -11,6 +11,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 let randomQuestion = [];
+let answersArr = [];
 app.use(cors());
 
 if (process.env.NODE_ENV === 'production') {
@@ -24,10 +25,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 const startGame = () => {
 	let openingQs = questions.normal;
-	// .sort(() => 0.5 - Math.random());
-	// let finalQs = questions.final.sort(() => 0.5 - Math.random());
+	let finalQs = questions.final;
 	//TODO: fix/ create game implementation
-	// for now it only returns the first Q.. and its random for each player, not the same for one instance.
+	// for now it only returns the first Q.
 	return openingQs;
 };
 
@@ -64,7 +64,7 @@ io.on('connect', (socket) => {
 		callback();
 	});
 
-	// ALL the connections for the game start here
+	// ALL GAME CONNECTIONS start here
 	socket.on('start-game', (callback) => {
 		const user = getUser(socket.id);
 
@@ -95,9 +95,8 @@ io.on('connect', (socket) => {
 		socket.emit('question', {
 			user: 'admin',
 			text: `${startGame()[randomQuestion[0]].question}`,
-    });
-    
-		//TODO: ideas: when all players have submitted, move on to next stage or setInterval for timers that clears when sockets
+		});
+
 		io.to(user.room).emit('roomData', {
 			room: user.room,
 			users: getUsersInRoom(user.room),
@@ -109,13 +108,28 @@ io.on('connect', (socket) => {
 	//create sockets for player answers in the game
 	socket.on('sendAnswer', (message, callback) => {
 		const user = getUser(socket.id);
-
-		io.to(user.room).emit('answer', { user: user.name, text: message });
-		//TODO: should save answers to an array, to be returned later
-		callback();
+		let users = getUsersInRoom(user.room);
+		answersArr.push({
+			user: user.name,
+			text: message,
+		});
+		//currently when all players have submitted, move on to next stage or
+		//TODO?: setInterval for timer that clears when answerArr is full
+		if (answersArr.length === users.length) {
+			//TODO: display all the answers as clickable buttons so players can choose their selection
+			answersArr.forEach((answer) => {
+				io.to(user.room).emit('answer', {
+					user: admin,
+					text: answer.text,
+				});
+			});
+		}
+		//TODO: after selection is chosen, display answers sequentially (with voters [and points])
+		// this will likely be done in a separate route.
+		callback('answer submitted');
 	});
 
-	// when a user closes the game window we should remove their id, so they can reconnect..
+	//TODO: when a user closes the game window we should remove their id, so they can reconnect..
 	// not currently working, needs room included in the removeUser function
 	socket.on('leave-game', (callback) => {
 		const user = removeUser(socket.id);
