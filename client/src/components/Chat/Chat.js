@@ -9,10 +9,10 @@ import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
 import GameWindow from '../GameWindow/Game';
 import onlineIcon from '../../icons/onlineIcon.png';
-
 import './Chat.css';
+const ENDPOINT = '/';
 
-let socket;
+let socket = io(ENDPOINT);
 
 const Chat = ({ location }) => {
 	const [name, setName] = useState('');
@@ -23,12 +23,9 @@ const Chat = ({ location }) => {
 	const [flag, setFlag] = useState(0);
 	const [game, setGame] = useState(false);
 	// const [countdown, setCountdown] = useState(false);
-	const ENDPOINT = '/';
 
 	useEffect(() => {
 		const { name, room } = queryString.parse(location.search);
-
-		socket = io(ENDPOINT);
 
 		setRoom(room);
 		setName(name);
@@ -39,10 +36,15 @@ const Chat = ({ location }) => {
 				alert(error);
 			}
 		});
-	}, [ENDPOINT, location.search]);
+	}, [location.search]);
 
 	useEffect(() => {
 		socket.on('message', (message) => {
+			setMessages((messages) => [...messages, message]);
+		});
+
+		socket.on('start-game', (start, message) => {
+			setTimeout(() => setGame(start), 3000);
 			setMessages((messages) => [...messages, message]);
 		});
 
@@ -80,18 +82,19 @@ const Chat = ({ location }) => {
 			</div>
 		);
 	};
+
 	function onPlay() {
-		let clicks = 0;
-		return () => {
-			setTimeout(() => {
-				setGame(clicks === 1);
-				clicks = 0;
-			}, 3000);
-			clicks++;
-			// setCountdown(!countdown); //for some reason this breaks the closure.
-			//TODO: create countdown interaction/event. upgrade onPlay to have timer and start function.
-		};
+		socket.emit('start-game', (message) => console.log(message));
+		// // setCountdown(!countdown);
+		//TODO: create countdown/cancel interaction/event. upgrade onPlay to have timer and start function.
 	}
+	function closeGame() {
+		socket.emit('leave-game', (message) =>
+			setMessages([...messages, message])
+		);
+		setGame(false);
+	}
+
 	return (
 		<div className="outerContainer">
 			<div className="container">
@@ -106,12 +109,17 @@ const Chat = ({ location }) => {
 			{!game && (
 				<TextContainer
 					users={users}
-					onPlay={onPlay()}
+					onPlay={onPlay}
 					countdown={false}
 				/>
 			)}
 			{game && (
-				<GameWindow room={`${room}-game`} name={name} socket={socket} />
+				<GameWindow
+					room={`${room}-game`}
+					name={name}
+					socket={socket}
+					closeGame={closeGame}
+				/>
 			)}
 			{game && users ? <Players players={users} /> : null}
 		</div>

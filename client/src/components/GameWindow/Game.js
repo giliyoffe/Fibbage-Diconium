@@ -6,7 +6,7 @@ import Input from '../Input/Input';
 
 import './Game.css';
 
-const GameWindow = ({ room, name, socket }) => {
+const GameWindow = ({ room, name, socket, closeGame}) => {
 	const [message, setMessage] = useState('');
 	const [messages, setMessages] = useState([]);
 	const [flag, setFlag] = useState(0);
@@ -21,10 +21,13 @@ const GameWindow = ({ room, name, socket }) => {
 	}, []);
 
 	useEffect(() => {
-		socket.on('question', (message) => {
-			setMessages((messages) => [...messages, message]);
-		});
-		socket.on('game-message', (message) => {
+		['question', 'game-message'].forEach((item) =>
+			socket.on(item, (message) => {
+				setMessages((messages) => [...messages, message]);
+			})
+		);
+		//TODO: currently shows your answer when you type. should show clickable options once people submit options
+		socket.on('answer', (message) => {
 			setMessages((messages) => [...messages, message]);
 		});
 	}, []);
@@ -43,7 +46,7 @@ const GameWindow = ({ room, name, socket }) => {
 
 	return (
 		<div className="container">
-			<InfoBar room={room} />
+			<InfoBar room={room} onClick={closeGame}/>
 			<Messages messages={messages} name={name} />
 			<Input
 				message={message}
