@@ -4,12 +4,12 @@
   "description": "boilerplate for fibbage diconium",
   "main": "index.js",
   "scripts": {
-    "install": "cd client && npm install && cd .. && cd server1 && npm install",
+    "install": "cd client && npm install && cd .. && cd server && npm install",
     "client": "cd client && npm run start",
-    "server": "cd server1 && npm run start",
+    "server": "cd server && npm run start",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd server1 && node index.js",
+    "start": "cd server && node index.js",
     "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "repository": {
