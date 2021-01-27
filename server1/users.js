@@ -25,5 +25,5 @@ const removeUser = (id) => {
 const getUser = (id) => users.find((user) => user.id === id);
 
 const getUsersInRoom = (room) => users.filter((user) => user.room === room);
-// TODO: Delete - ignore this line it is a test for PR/MR 4 github
+
 module.exports = { addUser, removeUser, getUser, getUsersInRoom };
