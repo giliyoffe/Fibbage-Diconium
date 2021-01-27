@@ -23,6 +23,17 @@ if (process.env.NODE_ENV === 'production') {
 		res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 	});
 }
+/**
+ * questions Interface
+ * {['normal' | 'final']: [
+  {category:string,
+question: string,
+answer: string,
+alternateSpellings: string[],
+suggestions: : string[]}
+,... ]
+}
+ */
 const startGame = () => {
 	let openingQs = questions.normal;
 	let finalQs = questions.final;
