@@ -4,12 +4,14 @@ import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
 import ProgressBar from "../ProgressBar/ProgressBar";
+import Answers from '../Answers';
 
 import './Game.css';
 
 const GameWindow = ({ room, name, socket, closeGame}) => {
 	const [message, setMessage] = useState('');
 	const [messages, setMessages] = useState([]);
+	const [answers, setAnswers] = useState([]);
 	const [flag, setFlag] = useState(0);
 
 	useEffect(() => {
@@ -27,18 +29,23 @@ const GameWindow = ({ room, name, socket, closeGame}) => {
 				setMessages((messages) => [...messages, message]);
 			})
 		);
-		//TODO: currently shows your answer when you type. should show clickable options once people submit options
-		socket.on('answer', (message) => {
-			setMessages((messages) => [...messages, message]);
-		});
+
+		socket.on('answers', (answers) => {
+      console.log('answers', answers);
+      setAnswers(answers);
+    });
 	}, []);
 
 	const sendMessage = (event) => {
 		event.preventDefault();
-		//TODO: this event should submit your answer (to not be displayed)
 		if (message) {
 			socket.emit('sendAnswer', message, () => setMessage(''));
 		}
+	};
+
+  // TODO: placeholder. get ansers some other way
+	const getAnswers = () => {
+    socket.emit('getAnswers', '', response => console.log(response));
 	};
 
 	if (flag) {
@@ -49,12 +56,16 @@ const GameWindow = ({ room, name, socket, closeGame}) => {
 		<div className="container">
 			<InfoBar room={room} onClick={closeGame}/>
 			<Messages messages={messages} name={name} />
+      <Answers
+        answers={answers}
+      />
 			<ProgressBar />
 			<Input
 				message={message}
 				setMessage={setMessage}
 				sendMessage={sendMessage}
 			/>
+    <button type="button" onClick={() => getAnswers()}>get answers</button>
 		</div>
 	);
 };
