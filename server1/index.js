@@ -130,7 +130,7 @@ io.on('connect', (socket) => {
 			//TODO: display all the answers as clickable buttons so players can choose their selection
 			answersArr.forEach((answer) => {
 				io.to(user.room).emit('answer', {
-					user: admin,
+					user: "admin",
 					text: answer.text,
 				});
 			});
