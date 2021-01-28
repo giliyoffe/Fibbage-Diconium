@@ -3,6 +3,7 @@ import { Redirect } from 'react-router';
 import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 import './Game.css';
 
@@ -48,6 +49,7 @@ const GameWindow = ({ room, name, socket, closeGame}) => {
 		<div className="container">
 			<InfoBar room={room} onClick={closeGame}/>
 			<Messages messages={messages} name={name} />
+			<ProgressBar />
 			<Input
 				message={message}
 				setMessage={setMessage}

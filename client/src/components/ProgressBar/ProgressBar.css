@@ -1,0 +1,67 @@
+.progressBarBackground {
+  width: 100%;
+  background-color: #e9ecef;
+  position: relative;
+  height: 16px;
+}
+
+.progressBar {
+  height: 100%;
+  width: 100%;
+  background-color: #2979ff;
+  position: absolute;
+  right: 0;
+  transform-origin: right;
+  animation: anim-progress 30s linear forwards;
+}
+
+@keyframes anim-progress {
+  0% {
+    background-color: #28a745;
+    transform: scaleX(1);
+  }
+  45% {
+    background-color: #28a745;
+  }
+  55% {
+    background-color: #ffc107;
+  }
+  80% {
+    background-color: #dc3545;
+  }
+  90% {
+    opacity: 1;
+  }
+  91% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0;
+  }
+  94% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+  96% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0;
+  }
+  98% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(0);
+    opacity: 1;
+    background-color: #dc3545;
+  }
+}
