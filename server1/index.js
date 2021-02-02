@@ -119,12 +119,13 @@ io.on('connect', (socket) => {
 	//create sockets for player answers in the game
 	socket.on('sendAnswer', (message, callback) => {
 		const user = getUser(socket.id);
+		const users = getUsersInRoom(user.room);
 		// TODO: make sure that you cannot answer more than once!
 		answersArr.push({
 			user: user.name,
 			text: message,
 		});
-		const users = getUsersInRoom(user.room);
+		console.log(answersArr, users)
 		if (answersArr.length === users.length) {
 			io.to(user.room).emit('answers', answersArr);
 		}

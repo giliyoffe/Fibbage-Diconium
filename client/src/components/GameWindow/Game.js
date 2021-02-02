@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
-import Messages from '../Messages/Messages';
+
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import Answers from '../Answers';
-
+import Question from '../Question/Question';
 import './Game.css';
 
 const GameWindow = ({ room, name, socket, closeGame }) => {
 	const [message, setMessage] = useState('');
-	const [messages, setMessages] = useState([]);
+	const [question, setQuestion] = useState('');
 	const [answers, setAnswers] = useState([]);
 	const [flag, setFlag] = useState(0);
+	const [bar, setBar] = useState(false);
 
 	useEffect(() => {
 		socket.emit('join-game', { name, room }, (error) => {
@@ -24,15 +25,16 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 	}, []);
 
 	useEffect(() => {
-		['question', 'game-message'].forEach((item) =>
-			socket.on(item, (message) => {
-				setMessages((messages) => [...messages, message]);
-			})
-		);
+		socket.on('question', (message) => {
+			setQuestion( message);
+			setBar(true);
+		});
 
 		socket.on('answers', (answers) => {
 			console.log('answers', answers);
 			setAnswers(answers);
+			setBar(false);
+			// setTimeout(setBar(true), 2000);
 		});
 	}, []);
 
@@ -50,9 +52,9 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 	return (
 		<div className="container">
 			<InfoBar room={room} onClick={closeGame} />
-			<Messages messages={messages} name={name} />
+			<Question message={question} />
 			<Answers answers={answers} />
-			{answers.length === 0 && <ProgressBar />}
+			{bar && <ProgressBar />}
 			<Input
 				message={message}
 				setMessage={setMessage}

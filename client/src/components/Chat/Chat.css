@@ -1,7 +1,8 @@
 .outerContainer {
 	display: flex;
+	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: center;
+	justify-content: space-around;
 	align-items: center;
 	height: 100vh;
 	background-color: #1a1a1d;
@@ -10,11 +11,12 @@
 .container {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: center;
 	background: #ffffff;
 	border-radius: 8px;
 	height: 60%;
 	width: 40%;
+	margin: 0;
 }
 
 .playerContainer {
