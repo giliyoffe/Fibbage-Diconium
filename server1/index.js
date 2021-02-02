@@ -124,17 +124,11 @@ io.on('connect', (socket) => {
 			user: user.name,
 			text: message,
 		});
-
-		callback('answer submitted');
-	});
-
-	socket.on('getAnswers', (message, callback) => {
-		const user = getUser(socket.id);
 		const users = getUsersInRoom(user.room);
 		if (answersArr.length === users.length) {
 			io.to(user.room).emit('answers', answersArr);
 		}
-		callback('sent answers!');
+		callback('answer submitted');
 	});
 
 	//TODO: when a user closes the game window we should remove their id, so they can reconnect..

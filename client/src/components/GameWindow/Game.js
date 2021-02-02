@@ -43,11 +43,6 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 		}
 	};
 
-	// TODO: placeholder. get ansers some other way
-	const getAnswers = () => {
-		socket.emit('getAnswers', '', (response) => console.log(response));
-	};
-
 	if (flag) {
 		return <Redirect to="/" />;
 	}
@@ -57,15 +52,12 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 			<InfoBar room={room} onClick={closeGame} />
 			<Messages messages={messages} name={name} />
 			<Answers answers={answers} />
-			<ProgressBar />
+			{answers.length === 0 && <ProgressBar />}
 			<Input
 				message={message}
 				setMessage={setMessage}
 				sendMessage={sendMessage}
 			/>
-			<button type="button" onClick={() => getAnswers()}>
-				get answers
-			</button>
 		</div>
 	);
 };
