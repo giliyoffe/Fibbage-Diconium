@@ -3,12 +3,12 @@ import { Redirect } from 'react-router';
 import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
-import ProgressBar from "../ProgressBar/ProgressBar";
+import ProgressBar from '../ProgressBar/ProgressBar';
 import Answers from '../Answers';
 
 import './Game.css';
 
-const GameWindow = ({ room, name, socket, closeGame}) => {
+const GameWindow = ({ room, name, socket, closeGame }) => {
 	const [message, setMessage] = useState('');
 	const [messages, setMessages] = useState([]);
 	const [answers, setAnswers] = useState([]);
@@ -31,9 +31,9 @@ const GameWindow = ({ room, name, socket, closeGame}) => {
 		);
 
 		socket.on('answers', (answers) => {
-      console.log('answers', answers);
-      setAnswers(answers);
-    });
+			console.log('answers', answers);
+			setAnswers(answers);
+		});
 	}, []);
 
 	const sendMessage = (event) => {
@@ -43,9 +43,9 @@ const GameWindow = ({ room, name, socket, closeGame}) => {
 		}
 	};
 
-  // TODO: placeholder. get ansers some other way
+	// TODO: placeholder. get ansers some other way
 	const getAnswers = () => {
-    socket.emit('getAnswers', '', response => console.log(response));
+		socket.emit('getAnswers', '', (response) => console.log(response));
 	};
 
 	if (flag) {
@@ -54,18 +54,18 @@ const GameWindow = ({ room, name, socket, closeGame}) => {
 
 	return (
 		<div className="container">
-			<InfoBar room={room} onClick={closeGame}/>
+			<InfoBar room={room} onClick={closeGame} />
 			<Messages messages={messages} name={name} />
-      <Answers
-        answers={answers}
-      />
+			<Answers answers={answers} />
 			<ProgressBar />
 			<Input
 				message={message}
 				setMessage={setMessage}
 				sendMessage={sendMessage}
 			/>
-    <button type="button" onClick={() => getAnswers()}>get answers</button>
+			<button type="button" onClick={() => getAnswers()}>
+				get answers
+			</button>
 		</div>
 	);
 };

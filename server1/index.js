@@ -119,7 +119,7 @@ io.on('connect', (socket) => {
 	//create sockets for player answers in the game
 	socket.on('sendAnswer', (message, callback) => {
 		const user = getUser(socket.id);
-    // TODO: make sure that you cannot answer more than once!
+		// TODO: make sure that you cannot answer more than once!
 		answersArr.push({
 			user: user.name,
 			text: message,
@@ -132,10 +132,10 @@ io.on('connect', (socket) => {
 		const user = getUser(socket.id);
 		const users = getUsersInRoom(user.room);
 		if (answersArr.length === users.length) {
-      io.to(user.room).emit('answers', answersArr);
+			io.to(user.room).emit('answers', answersArr);
 		}
-    callback('sent answers!');
-  })
+		callback('sent answers!');
+	});
 
 	//TODO: when a user closes the game window we should remove their id, so they can reconnect..
 	// not currently working, needs room included in the removeUser function
