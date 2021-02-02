@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import Join from "./components/Join/Join";
 import Chat from "./components/Chat/Chat";
-import Score from './components/Score/Score'
+import Score from "./components/Score/Score";
 
 const App = () => (
   <Router>
