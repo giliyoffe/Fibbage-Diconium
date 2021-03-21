@@ -34,11 +34,14 @@ suggestions: : string[]}
 ,... ]
 }
  */
-const startGame = () => {
+const getQuestions = () => {
 	let openingQs = questions.normal;
-	let finalQs = questions.final;
+	// let finalQs = questions.final;
 	//TODO: fix/ create game implementation
 	// for now it only returns the first Q.
+
+  // TODO: later in not MVP version: handle alternateSpellings(in questions.json)// maybe use above commented code
+
 	return openingQs;
 };
 
@@ -51,11 +54,11 @@ io.on('connect', (socket) => {
 		socket.join(user.room);
 
 		socket.emit('message', {
-			user: 'admin',
+			user: 'system message',
 			text: `${user.name}, welcome to room ${user.room}.`,
 		});
 		socket.broadcast.to(user.room).emit('message', {
-			user: 'admin',
+			user: 'system message',
 			text: `${user.name} has joined!`,
 		});
 
@@ -80,7 +83,7 @@ io.on('connect', (socket) => {
 		const user = getUser(socket.id);
 
 		io.to(user.room).emit('start-game', true, {
-			user: 'admin',
+			user: 'system message',
 			text: 'starting Game...',
 		});
 
@@ -89,7 +92,7 @@ io.on('connect', (socket) => {
 
 	//create sockets for actual game interactions - theoretically all of the game logic should happen here?
 	socket.on('join-game', ({ name, room }, callback) => {
-		let randomNumber = Math.floor(startGame().length * Math.random());
+		let randomNumber = Math.floor(getQuestions().length * Math.random());
 		randomQuestion.push(randomNumber);
 
 		console.log(randomNumber);
@@ -99,14 +102,21 @@ io.on('connect', (socket) => {
 		socket.join(user.room);
 
 		socket.emit('game-message', {
-			user: 'admin',
+			user: 'system message',
 			text: `${user.name}, welcome to the game ${user.room}.`,
 		});
-		//should return the same question to each player (perhaps startGame function above needs to be within the socket)
+		//should return the same question to each player (perhaps getQuestions function above needs to be within the socket)
 		socket.emit('question', {
-			user: 'admin',
-			text: `${startGame()[randomQuestion[0]].question}`,
+			user: 'system message',
+			text: `${getQuestions()[randomQuestion[0]].question}`,
 		});
+console.log('specific relevant answer? :', `${getQuestions()[randomQuestion[0]].answer}`);
+    // //Save real answer
+    // answersArr.push({
+		// 	user: 'Real Answer',
+		// 	text: `${getQuestions()[randomQuestion[0]].answer}`,
+		// });
+    
 
 		io.to(user.room).emit('roomData', {
 			room: user.room,
@@ -125,8 +135,8 @@ io.on('connect', (socket) => {
 			user: user.name,
 			text: message,
 		});
-		console.log(answersArr, users)
-		if (answersArr.length === users.length) {
+		console.log('answersArr :', answersArr, '\n users : ', users)
+		if (answersArr.length === users.length) { // FIXME: how to show real answer?
 			io.to(user.room).emit('answers', answersArr);
 		}
 		callback('answer submitted');
@@ -138,10 +148,10 @@ io.on('connect', (socket) => {
 		const user = removeUser(socket.id);
 
 		io.to(user.room).emit('game-message', {
-			user: 'admin',
+			user: 'system message',
 			text: `${user.name} has left.`,
 		});
-		callback({ user: 'admin', text: 'You left the game.' });
+		callback({ user: 'system message', text: 'You left the game.' });
 	});
 
 	socket.on('disconnect', () => {
@@ -149,7 +159,7 @@ io.on('connect', (socket) => {
 
 		if (user) {
 			io.to(user.room).emit('message', {
-				user: 'admin',
+				user: 'system message',
 				text: `${user.name} has left.`,
 			});
 			io.to(user.room).emit('roomData', {

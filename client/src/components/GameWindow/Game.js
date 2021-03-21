@@ -22,7 +22,7 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 				alert(error);
 			}
 		});
-	}, []);
+	}, []); // name, room, socket
 
 	useEffect(() => {
 		socket.on('question', (message) => {
@@ -36,7 +36,7 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 			setBar(false);
 			// setTimeout(setBar(true), 2000);
 		});
-	}, []);
+	}, []); // socket
 
 	const sendMessage = (event) => {
 		event.preventDefault();
