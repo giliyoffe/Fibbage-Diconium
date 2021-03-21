@@ -7,6 +7,32 @@
 
 <br></br>
 
+### To run locally:
+#### Clone the repo
+
+```sh
+git clone https://github.com/giliyoffe/Fibbage-Diconium.git
+```
+
+## Install
+
+```sh
+// navigate to the folder
+cd Fibbage-Diconium
+```
+```js
+// install
+npm run install
+
+// run server
+npm run server
+
+// run client (in another terminal tab/window)
+npm run client
+```
+<br />
+<br />
+
 ## Motive behind the App:
 #### Free Fibbage Game plus the wish to expirience using React, Express, socket.io and Node.js in the same project.
 
