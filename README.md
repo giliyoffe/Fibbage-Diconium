@@ -1,8 +1,5 @@
 ## Fibbage boilerplate Application using React, Express, socket.io, Node.js
-### Fibbage Game based on the chat repo 
-### It allows multiple users to chat in a same room in real time.
-
-## testing push to herokuu
+#### Live Project: https://fibbage-diconium.herokuapp.com/
 
 <br></br>
 
@@ -11,11 +8,14 @@
 <br></br>
 
 ## Motive behind the App:
-#### Join. Chat. Leave. No Records.
+#### Free Fibbage Game plus the wish to expirience using React, Express, socket.io and Node.js in the same project.
 
 <br />
+<br />
+<br />
 
-## Features of the App:
+#### Based from a fork of a  ![React-Chat-App](https://github.com/Sid22031998/React-Chat-App)
+#### Features of the Chat App:
 <ul>
     <li>Multiple users can connect to the same room and chat.</li>
     <li>The app is based on Snapchat as when you leave the room the messages automatically get deleted.</li>
@@ -24,8 +24,3 @@
     <li>Multiple rooms can function simultaneously.
     <li>The app is purely based on JS so none of your chat data is saved anywhere. User privacy is important.</li>
 </ul>
-
-<br />
-
-#### Article published on Medium: https://medium.com/swlh/build-a-chat-app-using-react-express-socket-io-nodejs-32b922c9dd4f
-#### Live Project: https://instameet.herokuapp.com/
