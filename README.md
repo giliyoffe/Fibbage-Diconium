@@ -1,4 +1,5 @@
 ## Fibbage boilerplate Application using React, Express, socket.io, Node.js
+### Fibbage Game based on the chat repo 
 ### It allows multiple users to chat in a same room in real time.
 
 ## testing push to herokuu
