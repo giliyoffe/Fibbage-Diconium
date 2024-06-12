@@ -10,6 +10,9 @@ import Input from '../Input/Input';
 import GameWindow from '../GameWindow/Game';
 import onlineIcon from '../../icons/onlineIcon.png';
 import './Chat.css';
+// import { createContext } from 'react';
+
+
 const ENDPOINT = '/';
 
 let socket = io(ENDPOINT);
@@ -23,6 +26,23 @@ const Chat = ({ location }) => {
 	const [flag, setFlag] = useState(0);
 	const [game, setGame] = useState(false);
 	// const [countdown, setCountdown] = useState(false);
+
+
+	// const nameContext = createContext(name);
+	// const roomContext = createContext(room);
+	// const usersContext = createContext(users);
+	// const messageContext = createContext(message);
+	// const messagesgesContext = createContext(messages);
+	// const flagContext = createContext(flag);
+	// const gameContext = createContext(game);
+
+	// // const nameContext = useContext(name);
+	// const roomContext = useContext(room);
+	// const usersContext = useContext(users);
+	// const messageContext = useContext(message);
+	// const messagesgesContext = useContext(messages);
+	// const flagContext = useContext(flag);
+	// const gameContext = useContext(game);
 
 	useEffect(() => {
 		const { name, room } = queryString.parse(location.search);
@@ -57,7 +77,7 @@ const Chat = ({ location }) => {
 		event.preventDefault();
 
 		if (message) {
-			socket.emit('sendMessage', message, () => setMessage(''));
+			socket.emit('send-message', message, () => setMessage(''));
 		}
 	};
 
@@ -84,7 +104,10 @@ const Chat = ({ location }) => {
 	};
 
 	function onPlay() {
+		console.log('start game btn pushed');
+		debugger;
 		socket.emit('start-game', (message) => console.log(message));
+		setGame(true);
 		// // setCountdown(!countdown);
 		//TODO: create countdown/cancel interaction/event. upgrade onPlay to have timer and start function.
 	}

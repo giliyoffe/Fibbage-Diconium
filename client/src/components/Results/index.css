@@ -1,0 +1,13 @@
+.resultsContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.chosenAnswerOption {
+    justify-self: center;
+}
+
+.answeredBy {
+    display: inline-flex;
+    justify-content: space-evenly;
+}

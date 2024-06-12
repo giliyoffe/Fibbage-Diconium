@@ -8,14 +8,6 @@
 <br></br>
 
 ### To run locally:
-#### Clone the repo
-
-```sh
-git clone https://github.com/giliyoffe/Fibbage-Diconium.git
-```
-
-## Install
-
 ```sh
 // navigate to the folder
 cd Fibbage-Diconium

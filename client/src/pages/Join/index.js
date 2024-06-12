@@ -1,21 +1,46 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { navigate } from "@reach/router";
-
+import React, { useState, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
+import io, { setFlag } from 'socket.io-client';
 import "./Join.css";
-// import Check from '../Check/Check';
+// import { Alert } from "react-bootstrap";
+
+const ENDPOINT = '/';
+
+let socket = io(ENDPOINT);
 
 const Join = () => {
+  const history = useHistory();
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+  const [userNameAlreadyExists, setUserNameAlreadyExists] = useState(false);
 
   // Enable keyPress Enter to sign in.
   const onFormSubmit = (e) => {
     e.preventDefault();
-    navigate(`/chat?name=${name}&room=${room}`);
+    socket.emit('join', { name, room }, (error) => {
+			if (error) {
+				setFlag(1);
+				alert(error);
+			}
+
+		});
   };
 
+  useEffect(() => {
+		socket.on('userAlreadyExists', () => {
+			setUserNameAlreadyExists(true);
+      if (userNameAlreadyExists) {
+        console.log('userAlreadyExists');
+      }
+		});
+
+    socket.on('succesfulJoin', () =>  {
+      history.push("/lobby");
+    })
+	}, [history, userNameAlreadyExists]);
+
   return (
+    // {userNameAlreadyExists ? alert('user Name Already Exists'): 
     <div className="joinOuterContainer">
       <div className="joinInnerContainer">
         <h1 className="heading">Play Fibbage!</h1>
@@ -49,6 +74,7 @@ const Join = () => {
             </button>
           </Link>
         </form>
+        {/* } */}
       </div>
     </div>
   );

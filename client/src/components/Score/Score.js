@@ -33,7 +33,8 @@ const Score = () => {
           </tr>
         </thead>
         <tbody>
-          {scoreData.map((score) => (
+          {scoreData
+              .map((score) => (
             <tr>
               <td>{score.number}</td>
               <td>{score.name}</td>
