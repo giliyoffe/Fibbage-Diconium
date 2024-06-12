@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
+// import io from 'socket.io-client';
 
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
@@ -7,6 +8,10 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 import Answers from '../Answers';
 import Question from '../Question/Question';
 import './Game.css';
+
+// const ENDPOINT = '/';
+
+// let socket = io(ENDPOINT);
 
 const GameWindow = ({ room, name, socket, closeGame }) => {
 	const [message, setMessage] = useState('');
@@ -22,7 +27,7 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 				alert(error);
 			}
 		});
-	}, []); // name, room, socket
+	}, [name, room, socket]); // name, room, socket
 
 	useEffect(() => {
 		socket.on('question', (message) => {
@@ -36,12 +41,12 @@ const GameWindow = ({ room, name, socket, closeGame }) => {
 			setBar(false);
 			// setTimeout(setBar(true), 2000);
 		});
-	}, []); // socket
+	}, [socket]); // socket
 
 	const sendMessage = (event) => {
 		event.preventDefault();
 		if (message) {
-			socket.emit('sendAnswer', message, () => setMessage(''));
+			socket.emit('send-answer', message, () => setMessage(''));
 		}
 	};
 
